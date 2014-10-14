@@ -65,14 +65,14 @@ int main()
 	boardObject.setBoard(boardInput1);
 	Queue myQueue;
 	myQueue.Insert(boardObject);
-	rotGame.bruteForceSolve(myQueue, boardObject);
+	//rotGame.bruteForceSolve(myQueue, boardObject);
 
 	//Set up for AVL method
-	//AvlTree<GameState> avlTree;
-	//GameState game;
-	//game.setBoard(boardInput1);
-	//avlTree.insert(game);
-	//rotGame.aStarSolve(avlTree, game);
+	AvlTree<GameState> avlTree;
+	GameState game;
+	game.setBoard(boardInput1);
+	avlTree.insert(game);
+	rotGame.aStarSolve(avlTree, game);
 
 	return 0;
 }

@@ -130,12 +130,23 @@ void RotationGame::aStarSolve(AvlTree<GameState> tree, GameState game)
 	bool win = false;
 	while (!win)
 	{
+		Board b;
+		int num = 1;
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				b.board[i][j] = num;
+				num++;
+			}
+		}
+		GameState *gameArr = aStarGetBoards(tree, b);
 		//Find min based on expected moves
 		GameState tempGame = tree.findMin();
 		tempGame.print();
 
 		//cout << "min: " << tempGame.getExpectedMoves() << endl;
-		GameState *gameArr = aStarGetBoards(tree, tempGame.getBoard());
+		//GameState *gameArr = aStarGetBoards(tree, tempGame.getBoard());
 
 		//insert 12 rotated boards to avl queue
 		for (int i = 0; i < 12; i++)
@@ -156,43 +167,45 @@ GameState* aStarGetBoards(AvlTree<GameState> &tree, Board b)
 {
 	Board temp = b;
 	GameState game;
-	GameState arr[12];
-	//GameState *arr = new GameState[12];
+	//GameState arr[12];
+	GameState *arr[12];
+	for (int i = 0; i < 12; i++)
+	{
+		arr[i] = new GameState();
+	}
 	int num = 0;
 
 	for (int i = 0; i < 3; i++)
 	{
 		temp.rotateNorth(i);
-		arr[num].setBoard(temp);
-		arr[num].setExpectedMoves(game.priorityNum(temp));
-		arr[num].setPathToWin("=>North Col " + to_string(i));
+		arr[num]->setBoard(temp);
+		arr[num]->setExpectedMoves(game.priorityNum(temp));
+		arr[num]->setPathToWin("=>North Col " + to_string(i));
 		temp = b;
 		num++;
 
 		temp.rotateSouth(i);
-		arr[num].setBoard(temp);
-		arr[num].setExpectedMoves(game.priorityNum(temp));
-		arr[num].setPathToWin("=>South Col " + to_string(i));
+		arr[num]->setBoard(temp);
+		arr[num]->setExpectedMoves(game.priorityNum(temp));
+		arr[num]->setPathToWin("=>South Col " + to_string(i));
 		temp = b;
 		num++;
 
 		temp.rotateEast(i);
-		arr[num].setBoard(temp);
-		arr[num].setExpectedMoves(game.priorityNum(temp));
-		arr[num].setPathToWin("=>East Row " + to_string(i));
+		arr[num]->setBoard(temp);
+		arr[num]->setExpectedMoves(game.priorityNum(temp));
+		arr[num]->setPathToWin("=>East Row " + to_string(i));
 		temp = b;
 		num++;
 
 		temp.rotateWest(i);
-		arr[num].setBoard(temp);
-		arr[num].setExpectedMoves(game.priorityNum(temp));
-		arr[num].setPathToWin("=>West Row " + to_string(i));
+		arr[num]->setBoard(temp);
+		arr[num]->setExpectedMoves(game.priorityNum(temp));
+		arr[num]->setPathToWin("=>West Row " + to_string(i));
 		temp = b;
 		num++;
 	}
-	GameState *ptr = arr;
-	return ptr;
-	//return arr;
+	return *arr;
 }
 
 
