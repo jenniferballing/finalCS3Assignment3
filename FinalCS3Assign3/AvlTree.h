@@ -232,7 +232,7 @@ private:
 		balance(t);
 	}
 
-	/*void insert(GameState &game, AvlNode *&t)
+	void insert(GameState &game, AvlNode *&t)
 	{
 		if (t == NULL)
 		{
@@ -243,7 +243,7 @@ private:
 		else if (t->element.getExpectedMoves() < game.getExpectedMoves())
 			insert(game, t->left);
 		balance(t);
-	}*/
+	}
 
 
 	/**

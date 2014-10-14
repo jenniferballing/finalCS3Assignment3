@@ -2,7 +2,7 @@
 #define GAMESTATE_H
 
 #include "Board.h"
-#include "AvlTree.h"
+//#include "AvlTree.h"
 
 using namespace std;
 class GameState
