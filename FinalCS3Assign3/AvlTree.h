@@ -192,7 +192,7 @@ private:
 	AvlNode* findParent(int desiredEl)
 	{
 		assert(!isEmpty());
-		return findParent(root, NULL, desiredEl);
+		return findParent(root->left, root, desiredEl);
 	}
 
 
@@ -307,8 +307,8 @@ private:
 		if (t == NULL) return NULL;
 		if (parent == NULL) return NULL;
 		if (t->element == desiredEl) return parent;
-		if (t->element > desiredEl) return findParent(t->left, t, desiredEl);
-		if (t->element < desiredEl) return findParent(t->right, t, desiredEl);
+		else if (t->element > desiredEl) return findParent(t->left, t, desiredEl);
+		else if (t->element < desiredEl) return findParent(t->right, t, desiredEl);
 	}
 
 	static const int ALLOWED_IMBALANCE = 1;
