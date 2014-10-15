@@ -13,7 +13,8 @@ class RotationGame
 public:
 	RotationGame();
 	void bruteForceSolve(Queue myQueue, BoardObject b);
-	void aStarSolve(AvlTree<GameState> tree, GameState game);
+	void aStarSolve(AvlTree<GameState> &tree, GameState &game);
+	void aStarWithInts(AvlTree<int> &tree, Board b);
 	~RotationGame();
 };
 #endif

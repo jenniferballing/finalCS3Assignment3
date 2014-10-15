@@ -52,6 +52,28 @@ int main()
 
 	/*****************************/
 
+	/*Board test1, test2, test3, test4; 
+	int arr1[9] = { 9, 1, 2, 3, 4, 5, 6, 7, 8 };
+	int arr2[9] = { 7, 5, 9, 1, 8, 3, 4, 2, 6 };
+	int arr3[9] = { 9, 8, 6, 1, 2, 5, 4, 7, 3 };
+	int arr4[9] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	int num = 0;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			test1.board[i][j] = arr1[num];
+			test2.board[i][j] = arr2[num];
+			test3.board[i][j] = arr3[num];
+			test4.board[i][j] = arr4[num];
+			num++;
+		}
+	}
+	GameState g;
+	cout << "Should be 4: " << endl<< g.priorityNum(test1) << endl;
+	cout << "Should be 3: " << endl << g.priorityNum(test2) << endl;
+	cout << "Should be 3: " << endl << g.priorityNum(test3) << endl;
+	cout << "Should be 0: " << endl << g.priorityNum(test4) << endl;*/
 	/***PART TWO***/
 	//Instantiate the Rotation Game
 	RotationGame rotGame;
@@ -71,6 +93,8 @@ int main()
 	AvlTree<GameState> avlTree;
 	GameState game;
 	game.setBoard(boardInput1);
+	int priority = game.priorityNum(boardInput1);
+	game.setExpectedMoves(priority);
 	avlTree.insert(game);
 	rotGame.aStarSolve(avlTree, game);
 

@@ -42,9 +42,10 @@ int GameState:: priorityNum(Board b)
 	}
 	for (int i = 0; i < 3; i++)
 	{
-		check = 0;
+		
 		for (int j = 0; j < 3; j++)
 		{
+			check = 0;
 
 			if (b.board[i][j] == checkArr[i][j])sum += 0;
 			else
@@ -56,7 +57,7 @@ int GameState:: priorityNum(Board b)
 						sum += 1;
 						check++;
 					}
-					if (b.board[i][k] == checkArr[i][j])
+					else if (b.board[k][j] == checkArr[i][j])
 					{
 						sum += 1;
 						check++;

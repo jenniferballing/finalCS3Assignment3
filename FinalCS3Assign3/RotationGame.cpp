@@ -1,6 +1,7 @@
 #include "RotationGame.h"
 
 GameState* aStarGetBoards(AvlTree<GameState> &tree, Board b);
+Board* aStarIntBoards(AvlTree<int> &tree, Board b);
 BoardObject* returnBoards(Queue myQueue, Board b);
 
 RotationGame::RotationGame()
@@ -114,8 +115,8 @@ BoardObject* returnBoards(Queue myQueue, Board b)
 	}
 	return arr;
 }
-void RotationGame::aStarSolve(AvlTree<GameState> tree, GameState game)
-{		//Goal Board
+void RotationGame::aStarSolve(AvlTree<GameState> &tree, GameState &game)
+{	//Goal Board
 	Board winningBoard;
 	int count = 1;
 	for (int i = 0; i < 3; i++)
@@ -127,26 +128,18 @@ void RotationGame::aStarSolve(AvlTree<GameState> tree, GameState game)
 		}
 	}
 
+	GameState *gameArr;
+	
 	bool win = false;
 	while (!win)
 	{
-		Board b;
-		int num = 1;
-		for (int i = 0; i < 3; i++)
-		{
-			for (int j = 0; j < 3; j++)
-			{
-				b.board[i][j] = num;
-				num++;
-			}
-		}
-		GameState *gameArr = aStarGetBoards(tree, b);
+		
 		//Find min based on expected moves
+		GameState g;
 		GameState tempGame = tree.findMin();
 		tempGame.print();
-
-		//cout << "min: " << tempGame.getExpectedMoves() << endl;
-		//GameState *gameArr = aStarGetBoards(tree, tempGame.getBoard());
+		tree.removeMin(g);
+		gameArr = aStarGetBoards(tree, tempGame.getBoard());
 
 		//insert 12 rotated boards to avl queue
 		for (int i = 0; i < 12; i++)
@@ -163,49 +156,135 @@ void RotationGame::aStarSolve(AvlTree<GameState> tree, GameState game)
 		}
 	}
 }
-GameState* aStarGetBoards(AvlTree<GameState> &tree, Board b)
+/*void RotationGame::aStarWithInts(AvlTree<int> &tree, Board b)
+{
+
+	//Goal Board
+	Board winningBoard;
+	int count = 1;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			winningBoard.board[i][j] = count;
+			count++;
+		}
+	}
+
+	GameState *gameArr;
+
+	gameArr = aStarGetBoards(tree, b);
+	bool win = false;
+	while (!win)
+	{
+		//Find min based on expected moves
+		GameState g;
+		GameState tempGame = tree.findMin();
+		tempGame.print();
+		tree.removeMin(g);
+		if (!tree.isEmpty())
+		{
+			tempGame = tree.findMin();
+			tempGame.print();
+		}
+
+
+
+		//insert 12 rotated boards to avl queue
+		for (int i = 0; i < 12; i++)
+		{
+			tree.insert(gameArr[i]);
+			//cout << "i: " << i << "Expected Moves: " << gameArr[i].getExpectedMoves() << endl;
+		}
+		if (tempGame.getBoard() == winningBoard)
+		{
+			tempGame.print();
+			cout << "YOU WIN!! Original Board" << endl;
+			cout << winningBoard.toString();
+			win = true;
+		}
+	}
+}
+
+Board* aStarIntBoards(AvlTree<int> &tree, Board b)
 {
 	Board temp = b;
-	GameState game;
+	int game;
 	//GameState arr[12];
-	GameState *arr[12];
-	for (int i = 0; i < 12; i++)
-	{
-		arr[i] = new GameState();
-	}
+	Board *arr = new Board[12];
+	//for (int i = 0; i < 12; i++)
+	//{
+	//	arr[i] = new GameState();
+	//}
 	int num = 0;
 
 	for (int i = 0; i < 3; i++)
 	{
+
 		temp.rotateNorth(i);
-		arr[num]->setBoard(temp);
-		arr[num]->setExpectedMoves(game.priorityNum(temp));
-		arr[num]->setPathToWin("=>North Col " + to_string(i));
+		arr[num] = temp;
 		temp = b;
 		num++;
 
 		temp.rotateSouth(i);
-		arr[num]->setBoard(temp);
-		arr[num]->setExpectedMoves(game.priorityNum(temp));
-		arr[num]->setPathToWin("=>South Col " + to_string(i));
+		arr[num] = temp;
 		temp = b;
 		num++;
 
 		temp.rotateEast(i);
-		arr[num]->setBoard(temp);
-		arr[num]->setExpectedMoves(game.priorityNum(temp));
-		arr[num]->setPathToWin("=>East Row " + to_string(i));
+		arr[num] = temp;
 		temp = b;
 		num++;
 
 		temp.rotateWest(i);
-		arr[num]->setBoard(temp);
-		arr[num]->setExpectedMoves(game.priorityNum(temp));
-		arr[num]->setPathToWin("=>West Row " + to_string(i));
+		arr[num] = temp;
 		temp = b;
 		num++;
 	}
-	return *arr;
+	return arr;
+
+}*/
+GameState* aStarGetBoards(AvlTree<GameState> &tree, Board b)
+{
+	Board temp = b;
+	GameState game;
+	
+	GameState *arr = new GameState[12];
+
+	int num = 0;
+
+	for (int i = 0; i < 3; i++)
+	{
+
+		temp.rotateNorth(i);
+		arr[num].setBoard(temp);
+		arr[num].setExpectedMoves(game.priorityNum(temp));
+		arr[num].setPathToWin("=>North Col " + to_string(i));
+		temp = b;
+		num++;
+
+		temp.rotateSouth(i);
+		arr[num].setBoard(temp);
+		arr[num].setExpectedMoves(game.priorityNum(temp));
+		arr[num].setPathToWin("=>South Col " + to_string(i));
+		temp = b;
+		num++;
+
+		temp.rotateEast(i);
+		arr[num].setBoard(temp);
+		arr[num].setExpectedMoves(game.priorityNum(temp));
+		arr[num].setPathToWin("=>East Row " + to_string(i));
+		temp = b;
+		num++;
+
+		temp.rotateWest(i);
+		arr[num].setBoard(temp);
+		arr[num].setExpectedMoves(game.priorityNum(temp));
+		arr[num].setPathToWin("=>West Row " + to_string(i));
+		temp = b;
+		num++;
+	}
+	return arr;
 }
 
 
