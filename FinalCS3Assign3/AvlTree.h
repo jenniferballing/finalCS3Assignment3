@@ -171,6 +171,10 @@ public:
 	{
 		removeMin(root);
 	}
+	void removeMin(GameState g)
+	{
+		removeMin(root, g);
+	}
 
 private:
 	struct AvlNode
@@ -194,7 +198,12 @@ private:
 		assert(!isEmpty());
 		return findParent(root->left, root, desiredEl);
 	}
-
+	AvlNode* findParent(int desiredEl, GameState g)
+	{
+		assert(!isEmpty());
+		return findParent(root->left, root, desiredEl, g);
+	}
+	
 
 	/**
 	* Internal method to insert into a subtree.
@@ -234,14 +243,12 @@ private:
 
 	void insert(GameState &game, AvlNode *&t)
 	{
-		if (t == NULL)
-		{
-			AvlNode *newNode = new AvlNode(game, NULL, NULL);
-		}
+		if (t == NULL) 
+			t = new AvlNode(game, NULL, NULL);
 		else if (t->element.getExpectedMoves() > game.getExpectedMoves())
 			insert(game, t->left);
 		else if (t->element.getExpectedMoves() < game.getExpectedMoves())
-			insert(game, t->left);
+			insert(game, t->right);
 		balance(t);
 	}
 
@@ -301,6 +308,44 @@ private:
 
 		return;
 	}
+	void removeMin(AvlNode *t, GameState g)
+	{
+		if (t == NULL)return;
+		else if (t->left == NULL && t->right == NULL)
+		{
+			AvlNode *parentOfT = findParent(t->element.getExpectedMoves(), g);
+			if (parentOfT == NULL)
+			{
+				if (t == root)
+				{
+					root = NULL;
+					delete root;
+					return;
+				}
+				
+				t = NULL;
+				delete t;				
+				return;
+			}
+			parentOfT->left = NULL;
+			delete parentOfT->left;
+		}
+		else if (t->left == NULL && t->right != NULL)
+		{
+			AvlNode *parentOfT = findParent(t->element.getExpectedMoves(), g);
+			if (parentOfT == NULL) return;
+
+			rotateWithRightChild(t);
+			parentOfT->left = t;
+			t->left = NULL;
+			delete t->left;
+			return;
+			balance(t);
+		}
+		else if (t->left != NULL) removeMin(t->left, g);
+
+		return;
+	}
 
 	AvlNode* findParent(AvlNode *t, AvlNode *parent, int desiredEl)
 	{
@@ -310,7 +355,14 @@ private:
 		else if (t->element > desiredEl) return findParent(t->left, t, desiredEl);
 		else if (t->element < desiredEl) return findParent(t->right, t, desiredEl);
 	}
-
+	AvlNode* findParent(AvlNode *t, AvlNode *parent, int desiredEl, GameState g)
+	{
+		if (t == NULL) return NULL;
+		if (parent == NULL) return NULL;
+		if (t->element.getExpectedMoves() == desiredEl) return parent;
+		else if (t->element.getExpectedMoves() > desiredEl) return findParent(t->left, t, desiredEl, g);
+		else if (t->element.getExpectedMoves() < desiredEl) return findParent(t->right, t, desiredEl, g);
+	}
 	static const int ALLOWED_IMBALANCE = 1;
 
 	// Assume t is balanced or within one of being balanced
