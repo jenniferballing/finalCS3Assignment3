@@ -107,14 +107,14 @@ Board inputBoards(int boardNumber)
 	if (boardNumber == 1)
 	{
 		arr[0] = 5;
-		arr[1] = 6;
-		arr[2] = 4;
-		arr[3] = 8;
-		arr[4] = 2;
-		arr[5] = 9;
-		arr[6] = 1;
+		arr[1] = 8;
+		arr[2] = 6;
+		arr[3] = 4;
+		arr[4] = 3;
+		arr[5] = 1;
+		arr[6] = 9;
 		arr[7] = 7;
-		arr[8] = 3;
+		arr[8] = 2;
 
 	}
 	else if (boardNumber == 2)

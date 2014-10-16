@@ -198,12 +198,12 @@ private:
 		assert(!isEmpty());
 		return findParent(root->left, root, desiredEl);
 	}
-	AvlNode* findParent(int desiredEl, GameState g)
+	AvlNode* findParent(AvlNode*t, GameState g)
 	{
-		assert(!isEmpty());
-		return findParent(root->left, root, desiredEl, g);
+		//assert(!isEmpty());
+		return findParent(t, root, g);
 	}
-	
+
 
 	/**
 	* Internal method to insert into a subtree.
@@ -243,9 +243,9 @@ private:
 
 	void insert(GameState &game, AvlNode *&t)
 	{
-		if (t == NULL) 
+		if (t == NULL)
 			t = new AvlNode(game, NULL, NULL);
-		else if (t->element.getExpectedMoves() > game.getExpectedMoves())
+		else if (t->element.getExpectedMoves() >= game.getExpectedMoves())
 			insert(game, t->left);
 		else if (t->element.getExpectedMoves() < game.getExpectedMoves())
 			insert(game, t->right);
@@ -313,7 +313,7 @@ private:
 		if (t == NULL)return;
 		else if (t->left == NULL && t->right == NULL)
 		{
-			AvlNode *parentOfT = findParent(t->element.getExpectedMoves(), g);
+			AvlNode *parentOfT = findParent(t, g);
 			if (parentOfT == NULL)
 			{
 				if (t == root)
@@ -322,9 +322,9 @@ private:
 					delete root;
 					return;
 				}
-				
+
 				t = NULL;
-				delete t;				
+				delete t;
 				return;
 			}
 			parentOfT->left = NULL;
@@ -332,7 +332,7 @@ private:
 		}
 		else if (t->left == NULL && t->right != NULL)
 		{
-			AvlNode *parentOfT = findParent(t->element.getExpectedMoves(), g);
+			AvlNode *parentOfT = findParent(t, g);
 			if (parentOfT == NULL) return;
 
 			rotateWithRightChild(t);
@@ -342,7 +342,8 @@ private:
 			return;
 			balance(t);
 		}
-		else if (t->left != NULL) removeMin(t->left, g);
+		else if (t->left != NULL)removeMin(t->left, g);// it knows the condition is true but it doesn't exe.
+		else cout << "UhOh!" << endl;
 
 		return;
 	}
@@ -352,16 +353,16 @@ private:
 		if (t == NULL) return NULL;
 		if (parent == NULL) return NULL;
 		if (t->element == desiredEl) return parent;
-		else if (t->element > desiredEl) return findParent(t->left, t, desiredEl);
-		else if (t->element < desiredEl) return findParent(t->right, t, desiredEl);
+		else if (t->element > desiredEl) return findParent(parent->left, t, desiredEl);
+		else if (t->element < desiredEl) return findParent(parent->right, t, desiredEl);
 	}
-	AvlNode* findParent(AvlNode *t, AvlNode *parent, int desiredEl, GameState g)
+	AvlNode* findParent(AvlNode *t, AvlNode *parent, GameState g)
 	{
-		if (t == NULL) return NULL;
+		if (t == NULL || t == root) return NULL;
 		if (parent == NULL) return NULL;
-		if (t->element.getExpectedMoves() == desiredEl) return parent;
-		else if (t->element.getExpectedMoves() > desiredEl) return findParent(t->left, t, desiredEl, g);
-		else if (t->element.getExpectedMoves() < desiredEl) return findParent(t->right, t, desiredEl, g);
+		if (parent->left == t || parent->right == t) return parent;
+		//return findParent(t, parent->right, g);
+		return findParent(t, parent->left, g);
 	}
 	static const int ALLOWED_IMBALANCE = 1;
 
@@ -372,16 +373,16 @@ private:
 			return;
 
 		if (height(t->left) - height(t->right) > ALLOWED_IMBALANCE)
-		if (height(t->left->left) >= height(t->left->right))
-			rotateWithLeftChild(t);
+			if (height(t->left->left) >= height(t->left->right))
+				rotateWithLeftChild(t);
+			else
+				doubleWithLeftChild(t);
 		else
-			doubleWithLeftChild(t);
-		else
-		if (height(t->right) - height(t->left) > ALLOWED_IMBALANCE)
-		if (height(t->right->right) >= height(t->right->left))
-			rotateWithRightChild(t);
-		else
-			doubleWithRightChild(t);
+			if (height(t->right) - height(t->left) > ALLOWED_IMBALANCE)
+				if (height(t->right->right) >= height(t->right->left))
+					rotateWithRightChild(t);
+				else
+					doubleWithRightChild(t);
 
 		t->height = max(height(t->left), height(t->right)) + 1;
 	}
@@ -424,8 +425,8 @@ private:
 	AvlNode * findMax(AvlNode *t) const
 	{
 		if (t != nullptr)
-		while (t->right != nullptr)
-			t = t->right;
+			while (t->right != nullptr)
+				t = t->right;
 		return t;
 	}
 

@@ -247,6 +247,7 @@ Board* aStarIntBoards(AvlTree<int> &tree, Board b)
 GameState* aStarGetBoards(AvlTree<GameState> &tree, Board b)
 {
 	Board temp = b;
+	
 	GameState game;
 	
 	GameState *arr = new GameState[12];
