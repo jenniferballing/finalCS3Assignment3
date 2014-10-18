@@ -2,13 +2,11 @@
 
 GameState::GameState()
 {
-
-	Board b;
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			b.board[i][j] = 1;
+			board.board[i][j] = 0;
 		}
 	}
 

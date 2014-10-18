@@ -1,5 +1,7 @@
 #include "Board.h"
 
+
+
 // Create a printable representation of the Board class
 // The stringstream allows you to use the power of output commands in creating a string
 string Board::toString() {

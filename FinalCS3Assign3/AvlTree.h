@@ -86,7 +86,7 @@ public:
 	*/
 	const TreeType & findMin() const
 	{
-		assert(!isEmpty());
+		//assert(!isEmpty());
 		return findMin(root)->element;
 	}
 
@@ -174,6 +174,8 @@ public:
 	void removeMin(GameState g)
 	{
 		removeMin(root, g);
+		balance(root);
+
 	}
 
 private:
@@ -195,7 +197,7 @@ private:
 
 	AvlNode* findParent(int desiredEl)
 	{
-		assert(!isEmpty());
+		//assert(!isEmpty());
 		return findParent(root->left, root, desiredEl);
 	}
 	AvlNode* findParent(AvlNode*t, GameState g)
@@ -291,18 +293,23 @@ private:
 			AvlNode *parentOfT = findParent(t->element);
 			if (parentOfT == NULL) return;
 			parentOfT->left = NULL;
+			balance(root);
 		}
 		else if (t->left == NULL && t->right != NULL)
 		{
 			AvlNode *parentOfT = findParent(t->element);
-			if (parentOfT == NULL) return;
+			if (parentOfT == NULL)
+			{
+				balance(t);
+				return;
+			}
 
-			rotateWithRightChild(t);
-			parentOfT->left = t;
-			t->left = NULL;
-			delete t->left;
-			return;
+			//rotateWithRightChild(t);
+			parentOfT->left = t->right;
+			//t->left = NULL;
+			//delete t->left;
 			balance(t);
+			return;
 		}
 		if (t->left != NULL)removeMin(t->left);
 
@@ -325,6 +332,7 @@ private:
 
 				t = NULL;
 				delete t;
+				balance(root);
 				return;
 			}
 			parentOfT->left = NULL;
@@ -333,18 +341,22 @@ private:
 		else if (t->left == NULL && t->right != NULL)
 		{
 			AvlNode *parentOfT = findParent(t, g);
-			if (parentOfT == NULL) return;
+			if (parentOfT == NULL)
+			{
+				balance(t);
+				return;
+			}
 
-			rotateWithRightChild(t);
-			parentOfT->left = t;
-			t->left = NULL;
-			delete t->left;
+			parentOfT->left = t->right;
 			return;
-			balance(t);
 		}
 		else if (t->left != NULL)removeMin(t->left, g);// it knows the condition is true but it doesn't exe.
-		else cout << "UhOh!" << endl;
-
+		if (t != NULL)
+		{
+			AvlNode *parentOfT = findParent(t, g);
+			if (parentOfT !=NULL)balance(parentOfT);
+		}
+			
 		return;
 	}
 

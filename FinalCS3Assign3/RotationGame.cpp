@@ -1,8 +1,10 @@
 #include "RotationGame.h"
+#include <vector>
 
 GameState* aStarGetBoards(AvlTree<GameState> &tree, Board b);
 Board* aStarIntBoards(AvlTree<int> &tree, Board b);
 BoardObject* returnBoards(Queue myQueue, Board b);
+bool duplicates(Board a, Board b);
 
 RotationGame::RotationGame()
 {
@@ -131,30 +133,83 @@ void RotationGame::aStarSolve(AvlTree<GameState> &tree, GameState &game)
 	GameState *gameArr;
 	
 	bool win = false;
+	vector<Board> boardArr(0);
 	while (!win)
 	{
 		
 		//Find min based on expected moves
 		GameState g;
-		GameState tempGame = tree.findMin();
-		tempGame.print();
-		tree.removeMin(g);
-		gameArr = aStarGetBoards(tree, tempGame.getBoard());
-
-		//insert 12 rotated boards to avl queue
-		for (int i = 0; i < 12; i++)
+		
+		int num = 0;
+		
+		GameState minGame = tree.findMin();
+		minGame.print();
+		bool dup = false;
+		for (auto st : boardArr)
 		{
-			tree.insert(gameArr[i]);
-			//cout << "i: " << i << "Expected Moves: " << gameArr[i].getExpectedMoves() << endl;
+			if (duplicates(st, minGame.getBoard()))
+			{
+				dup = true;
+				break;
+			}
 		}
-		if (tempGame.getBoard() == winningBoard)
+		if (!dup)
 		{
-			tempGame.print();
+			boardArr.push_back(minGame.getBoard());
+		}
+		tree.removeMin(g);
+
+		
+		gameArr = aStarGetBoards(tree, minGame.getBoard());
+		bool duplicate=false;
+		int removeNum=-1;
+		for (int i = 0; i < 12; i++)
+		{			
+			for (int j = 0; j <boardArr.size(); j++)
+			{
+				Board b = gameArr[i].getBoard();
+				Board a = boardArr[j];
+				duplicate = duplicates(a, b);
+				if (duplicate)
+				{
+					removeNum = i;
+				}
+			}
+			if (removeNum < 0)
+			{
+				tree.insert(gameArr[i]);
+				removeNum = -1;
+			}
+			else
+			{
+				removeNum = -1;
+			}
+		}
+
+		if (minGame.getBoard() == winningBoard)
+		{
+			minGame.print();
 			cout << "YOU WIN!! Original Board" << endl;
 			cout << winningBoard.toString();
 			win = true;
 		}
 	}
+}
+bool duplicates(Board a, Board b)
+{
+	int count = 0;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j<3; j++)
+		{
+			if (a.board[i][j] == b.board[i][j]) count++;
+		}
+	}
+	if (count == 9)
+	{
+		return true;
+	}
+	return false;
 }
 /*void RotationGame::aStarWithInts(AvlTree<int> &tree, Board b)
 {
